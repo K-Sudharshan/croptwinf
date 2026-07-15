@@ -1,25 +1,36 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { useRef } from "react";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import Features from "@/components/Features";
+import HowItWorks from "@/components/HowItWorks";
+import CropAnalyzer from "@/components/CropAnalyzer";
+import DashboardPreview from "@/components/DashboardPreview";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const cropAnalyzerRef = useRef<HTMLDivElement>(null);
+
+  const handleAnalyzerClick = () => {
+    cropAnalyzerRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-white">
+      <Header />
       <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
+        <Hero onAnalyzerClick={handleAnalyzerClick} />
+        <Features />
+        <HowItWorks />
+        <div ref={cropAnalyzerRef}>
+          <CropAnalyzer />
+        </div>
+        <DashboardPreview />
+        <About />
+        <Contact />
       </main>
+      <Footer />
     </div>
   );
 }
