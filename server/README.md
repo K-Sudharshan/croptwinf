@@ -182,12 +182,11 @@ The API returns standardized error responses:
 
 ```json
 {
-  "error": {
-    "message": "Error description",
-    "statusCode": 400,
-    "timestamp": "2026-07-16T16:30:00Z",
-    "path": "/api/endpoint"
-  }
+  "success": false,
+  "message": "Error description",
+  "error": "Stack trace (only in development)",
+  "timestamp": "2026-07-16T16:30:00Z",
+  "path": "/api/endpoint"
 }
 ```
 

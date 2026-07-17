@@ -19,12 +19,6 @@ router.use(authenticateToken);
 router.post("/", AnalysisController.performAnalysis);
 
 /**
- * GET /api/analyses/:id
- * Get a specific analysis by ID
- */
-router.get("/:id", AnalysisController.getAnalysis);
-
-/**
  * GET /api/analyses/user/all
  * Get all analyses for authenticated user
  */
@@ -35,6 +29,12 @@ router.get("/user/all", AnalysisController.getUserAnalyses);
  * Get all analyses for a specific crop
  */
 router.get("/crop/:cropId", AnalysisController.getCropAnalyses);
+
+/**
+ * GET /api/analyses/:id
+ * Get a specific analysis by ID
+ */
+router.get("/:id", AnalysisController.getAnalysis);
 
 /**
  * DELETE /api/analyses/:id

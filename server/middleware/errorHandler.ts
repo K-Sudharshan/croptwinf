@@ -22,12 +22,11 @@ export const errorHandler = (
   console.error(`[${new Date().toISOString()}] Error:`, err);
 
   res.status(statusCode).json({
-    error: {
-      message,
-      statusCode,
-      timestamp: new Date().toISOString(),
-      path: req.path,
-    },
+    success: false,
+    message: message,
+    error: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    timestamp: new Date().toISOString(),
+    path: req.originalUrl
   });
 };
 

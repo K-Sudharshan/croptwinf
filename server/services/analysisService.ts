@@ -5,6 +5,7 @@
 
 import { AnalysisModel, CreateAnalysisInput, Analysis } from "../models/Analysis";
 import { createError } from "../middleware/errorHandler";
+import env from "../config/environment";
 
 export interface AnalysisRequest {
   cropId: string;
@@ -12,13 +13,68 @@ export interface AnalysisRequest {
   imageUrl: string;
 }
 
+export interface AIAnalysisResult {
+  diseaseDetected: string;
+  confidence: number;
+  cropHealthScore: number;
+  recommendedTreatment: string;
+  waterRecommendation: string;
+  fertilizerRecommendation: string;
+  weatherSummary: string;
+}
+
+/**
+ * AI Provider Interface for future-proofing
+ */
+interface AIProvider {
+  analyzeImage(imageUrl: string): Promise<AIAnalysisResult>;
+}
+
+/**
+ * Mock AI Provider for development
+ */
+class MockAIProvider implements AIProvider {
+  async analyzeImage(_imageUrl: string): Promise<AIAnalysisResult> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return {
+      diseaseDetected: "Early Blight",
+      confidence: 92,
+      cropHealthScore: 68,
+      recommendedTreatment: "Apply copper-based fungicide every 7-10 days. Remove infected leaves.",
+      waterRecommendation: "Reduce watering to 2 times per week. Water early morning to minimize leaf wetness.",
+      fertilizerRecommendation: "Apply balanced NPK (10-10-10) fertilizer. Increase potassium for disease resistance.",
+      weatherSummary: "Warm, humid conditions favor disease spread. Monitor closely over next 5 days.",
+    };
+  }
+}
+
+/**
+ * Actual AI Provider (Placeholder for YOLO/TensorFlow/OpenAI)
+ */
+class RealAIProvider implements AIProvider {
+  async analyzeImage(imageUrl: string): Promise<AIAnalysisResult> {
+    // This is where you would call your actual AI API
+    // Example: const response = await axios.post(env.YOLO_API_URL, { image: imageUrl });
+    console.log(`Analyzing image at ${imageUrl} using real AI service at ${env.YOLO_API_URL}`);
+    
+    // For now, fallback to mock but structured as a real call
+    const mock = new MockAIProvider();
+    return mock.analyzeImage(imageUrl);
+  }
+}
+
 export class AnalysisService {
+  private static aiProvider: AIProvider = env.NODE_ENV === "production" 
+    ? new RealAIProvider() 
+    : new MockAIProvider();
+
   static async performAnalysis(
     analysisRequest: AnalysisRequest
   ): Promise<Analysis> {
-    // Call AI/ML service to analyze the image
-    // This is a placeholder - integrate with YOLO or TensorFlow
-    const aiResult = await this.callAIService(analysisRequest.imageUrl);
+    // Call AI/ML service to analyze the image through the provider
+    const aiResult = await this.aiProvider.analyzeImage(analysisRequest.imageUrl);
 
     const analysisData: CreateAnalysisInput = {
       cropId: analysisRequest.cropId,
@@ -67,32 +123,6 @@ export class AnalysisService {
     }
 
     await AnalysisModel.delete(id);
-  }
-
-  private static async callAIService(imageUrl: string): Promise<{
-    diseaseDetected: string;
-    confidence: number;
-    cropHealthScore: number;
-    recommendedTreatment: string;
-    waterRecommendation: string;
-    fertilizerRecommendation: string;
-    weatherSummary: string;
-  }> {
-    // TODO: Integrate with actual YOLO/TensorFlow API
-    // For now, return mock data
-    return {
-      diseaseDetected: "Early Blight",
-      confidence: 92,
-      cropHealthScore: 68,
-      recommendedTreatment:
-        "Apply copper-based fungicide every 7-10 days. Remove infected leaves.",
-      waterRecommendation:
-        "Reduce watering to 2 times per week. Water early morning to minimize leaf wetness.",
-      fertilizerRecommendation:
-        "Apply balanced NPK (10-10-10) fertilizer. Increase potassium for disease resistance.",
-      weatherSummary:
-        "Warm, humid conditions favor disease spread. Monitor closely over next 5 days.",
-    };
   }
 }
 

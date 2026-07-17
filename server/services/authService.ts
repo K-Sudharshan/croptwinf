@@ -43,7 +43,7 @@ export class AuthService {
     });
 
     // Remove password from response
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
 
     return {
       user: userWithoutPassword,
@@ -75,7 +75,7 @@ export class AuthService {
     });
 
     // Remove password from response
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
 
     return {
       user: userWithoutPassword,
@@ -89,7 +89,7 @@ export class AuthService {
       return null;
     }
 
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
@@ -102,7 +102,7 @@ export class AuthService {
       return null;
     }
 
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
